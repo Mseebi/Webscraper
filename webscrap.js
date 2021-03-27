@@ -2,6 +2,9 @@ const { fstat } = require('fs');
 const json2csv = require("json2csv")
 const puppeteer = require('puppeteer');
 const rp = require('request-promise');
+var MongoClient = require('mongodb').MongoClient;
+const mongodb = require("mongodb").MongoClient;
+const csvtojson = require("csvtojson");
 
 let mURL = "https://www.imdb.com/title/tt9784798/?ref_=adv_li_tt";
 rp(mURL)
@@ -42,3 +45,32 @@ rp(mURL)
   const csv = j2cp.parse(movieData)
   fstat.writeFileSync("./movie_scrap.csv", csv, "utf8");
 })
+
+//write from the csv to the database
+
+// let url = "mongodb://username:password@localhost:27017/";
+let url = "mongodb://localhost:27017/";
+
+csvtojson()
+  .fromFile("movies.csv")
+  .then(csvData => {
+    console.log(csvData);
+
+    mongodb.connect(
+      url,
+      { useNewUrlParser: true, useUnifiedTopology: true },
+      (err, client) => {
+        if (err) throw err;
+
+        client
+          .db("movies")
+          .collection("category")
+          .insertMany(csvData, (err, res) => {
+            if (err) throw err;
+
+            console.log(`Inserted: ${res.insertedCount} rows`);
+            client.close();
+          });
+      }
+    );
+  });
