@@ -60,7 +60,7 @@ while i < arr_len:
         cur.execute("INSERT INTO movies (title, yearReleased, runtime, ratings)VALUES (%s, %s, %s, %s);", (titles[i] , years[i] , time[i], imdb_ratings[i])) 
         i += 1
         con.commit()
-#con.close()
+        con.close()
 #pandas dataframe        
 movies = pd.DataFrame({
 'movie': titles,
