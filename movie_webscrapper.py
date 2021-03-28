@@ -47,7 +47,7 @@ for container in movie_div:
 
 arr_len = len(titles)
  
-qqcur.execute(''' CREATE TABLE movies (
+cur.execute(''' CREATE TABLE movies (
         title varchar, yearReleased varchar, runtime varchar, ratings varchar 
         );''')
 con.commit()
